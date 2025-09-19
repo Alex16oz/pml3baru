@@ -1,13 +1,13 @@
 [versions]
 agp = "8.4.0"
 kotlin = "2.0.0"
-coreKtx = "1.17.0"
+coreKtx = "1.13.1"  # <-- Ubah ke versi ini
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.9.4"
-activityCompose = "1.11.0"
-composeBom = "2025.09.00"
+lifecycleRuntimeKtx = "2.8.0"  # <-- Ubah ke versi ini
+activityCompose = "1.9.0"  # <-- Ubah ke versi ini
+composeBom = "2024.05.00"
 googleServices = "4.4.1"
 firebaseBom = "33.1.0"
 
