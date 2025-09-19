@@ -21,9 +21,7 @@ import yuga.ridho.pml3.ui.theme.Pml3baruTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val database = FirebaseDatabase.getInstance()
-        database.setPersistenceEnabled(true)
-        val db = database.getReference("TabelMahasiswa")
+        val db = FirebaseDatabase.getInstance().getReference("TabelMahasiswa")
 
         setContent {
             Pml3baruTheme {
@@ -97,33 +95,44 @@ fun MahasiswaScreen(db: DatabaseReference) {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(onClick = {
-                if (nim.isNotEmpty()) {
+                if (nim.isNotBlank() && nama.isNotBlank() && alamat.isNotBlank()) {
                     val mahasiswa = Mahasiswa(nim, nama, alamat)
-                    db.child(nim).setValue(mahasiswa)
-                    nim = ""
-                    nama = ""
-                    alamat = ""
+                    db.child(nim).setValue(mahasiswa).addOnSuccessListener {
+                        Toast.makeText(context, "Insert Success!", Toast.LENGTH_SHORT).show()
+                        nim = ""
+                        nama = ""
+                        alamat = ""
+                    }
+                } else {
+                    Toast.makeText(context, "All fields must be filled", Toast.LENGTH_SHORT).show()
                 }
             }) {
                 Text("Insert")
             }
             Button(onClick = {
-                if (nim.isNotEmpty()) {
-                    db.child(nim).child("namaMhs").setValue(nama)
-                    db.child(nim).child("alamatMhs").setValue(alamat)
-                    nim = ""
-                    nama = ""
-                    alamat = ""
+                if (nim.isNotBlank()) {
+                    val updateData = mapOf(
+                        "namaMhs" to nama,
+                        "alamatMhs" to alamat
+                    )
+                    db.child(nim).updateChildren(updateData).addOnSuccessListener {
+                        Toast.makeText(context, "Update Success!", Toast.LENGTH_SHORT).show()
+                        nim = ""
+                        nama = ""
+                        alamat = ""
+                    }
                 }
             }) {
                 Text("Update")
             }
             Button(onClick = {
-                if (nim.isNotEmpty()) {
-                    db.child(nim).removeValue()
-                    nim = ""
-                    nama = ""
-                    alamat = ""
+                if (nim.isNotBlank()) {
+                    db.child(nim).removeValue().addOnSuccessListener {
+                        Toast.makeText(context, "Delete Success!", Toast.LENGTH_SHORT).show()
+                        nim = ""
+                        nama = ""
+                        alamat = ""
+                    }
                 }
             }) {
                 Text("Delete")
@@ -165,7 +174,7 @@ fun MahasiswaItem(mahasiswa: Mahasiswa, onClick: () -> Unit) {
 @Composable
 fun DefaultPreview() {
     Pml3baruTheme {
-        val db = FirebaseDatabase.getInstance().getReference("TabelMahasiswa")
-        MahasiswaScreen(db)
+        // This is a preview and won't connect to Firebase
+        // You can create a dummy screen for preview purposes if needed
     }
 }
